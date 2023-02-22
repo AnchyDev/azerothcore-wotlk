@@ -44,67 +44,21 @@ void ItemAttributesMgr::LoadAttributesTable()
             uint64 guid = fields[0].Get<uint64>();
             uint32 quality = fields[1].Get<uint32>();
 
-            // TODO: Anchy: Turn this into a loop...
-
-            uint32 attrType1 = fields[2].Get<uint32>();
-            float attrValue1 = fields[3].Get<float>();
-
-            uint32 attrType2 = fields[4].Get<uint32>();
-            float attrValue2 = fields[5].Get<float>();
-
-            uint32 attrType3 = fields[6].Get<uint32>();
-            float attrValue3 = fields[7].Get<float>();
-
-            uint32 attrType4 = fields[8].Get<uint32>();
-            float attrValue4 = fields[9].Get<float>();
-
-            uint32 attrType5 = fields[10].Get<uint32>();
-            float attrValue5 = fields[11].Get<float>();
-
-            uint32 attrType6 = fields[12].Get<uint32>();
-            float attrValue6 = fields[13].Get<float>();
-
-            uint32 attrType7 = fields[14].Get<uint32>();
-            float attrValue7 = fields[15].Get<float>();
-
-            uint32 attrType8 = fields[16].Get<uint32>();
-            float attrValue8 = fields[17].Get<float>();
-
-            uint32 attrType9 = fields[18].Get<uint32>();
-            float attrValue9 = fields[19].Get<float>();
-
             ObjectGuid fullGuid(guid);
             ItemInformation itemInfo;
 
             itemInfo.Quality = (AttributeQuality)quality;
 
-            // TODO: Anchy: Include this into a loop...
-            itemInfo.Attributes[0].Type = attrType1;
-            itemInfo.Attributes[0].Value = attrValue1;
+            for (auto i = 0; i < MAX_ITEM_ATTRIBUTES; ++i)
+            {
+                auto attrIndex = 2 + (i * 2);
 
-            itemInfo.Attributes[1].Type = attrType2;
-            itemInfo.Attributes[1].Value = attrValue2;
+                uint32 attrType = fields[attrIndex].Get<uint32>();
+                uint32 attrValue = fields[attrIndex + 1].Get<uint32>();
 
-            itemInfo.Attributes[2].Type = attrType3;
-            itemInfo.Attributes[2].Value = attrValue3;
-
-            itemInfo.Attributes[3].Type = attrType4;
-            itemInfo.Attributes[3].Value = attrValue4;
-
-            itemInfo.Attributes[4].Type = attrType5;
-            itemInfo.Attributes[4].Value = attrValue5;
-
-            itemInfo.Attributes[5].Type = attrType6;
-            itemInfo.Attributes[5].Value = attrValue6;
-
-            itemInfo.Attributes[6].Type = attrType7;
-            itemInfo.Attributes[6].Value = attrValue7;
-
-            itemInfo.Attributes[7].Type = attrType8;
-            itemInfo.Attributes[7].Value = attrValue8;
-
-            itemInfo.Attributes[8].Type = attrType9;
-            itemInfo.Attributes[8].Value = attrValue9;
+                itemInfo.Attributes[i].Type = attrType;
+                itemInfo.Attributes[i].Value = attrValue;
+            }
 
             attributes.emplace(fullGuid, itemInfo);
 
