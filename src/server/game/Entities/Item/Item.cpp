@@ -483,10 +483,18 @@ bool Item::LoadFromDB(ObjectGuid::LowType guid, ObjectGuid owner_guid, Field* fi
         LOG_WARN("entities.item", "Invalid enchantment data '{}' for item {}. Forcing partial load.", fields[6].Get<std::string>(), GetGUID().ToString());
     }
 
-    SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, fields[7].Get<int16>());
-    // recalculate suffix factor
-    if (GetItemRandomPropertyId() < 0)
-        UpdateItemSuffixFactor();
+    // Anchy: Store the item GUID in the RandomPropertyID so the client can use it.
+    if (sWorld->getBoolConfig(CONFIG_ITEM_CUSTOM_ATTRIBUTES))
+    {
+        SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, guid);
+    }
+    else
+    {
+        SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, fields[7].Get<int16>());
+        // recalculate suffix factor
+        if (GetItemRandomPropertyId() < 0)
+            UpdateItemSuffixFactor();
+    }
 
     uint32 durability = fields[8].Get<uint16>();
     SetUInt32Value(ITEM_FIELD_DURABILITY, durability);
@@ -669,6 +677,13 @@ int32 Item::GenerateItemRandomPropertyId(uint32 item_id)
 
 void Item::SetItemRandomProperties(int32 randomPropId)
 {
+    // Anchy: Store the item GUID in the RandomPropertyID so the client can use it.
+    if (sWorld->getBoolConfig(CONFIG_ITEM_CUSTOM_ATTRIBUTES))
+    {
+        SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, GetGUID().GetRawValue());
+        return;
+    }
+
     if (!randomPropId)
         return;
 
