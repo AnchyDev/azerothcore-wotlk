@@ -99,7 +99,7 @@ void ItemAttributesMgr::LoadAttributesTable()
     }
     else
     {
-        LOG_INFO("server.loading", ">> Loaded 0 Item Attributes. DB table `item_attribute_instance` is empty.");
+        LOG_WARN("server.loading", ">> Loaded 0 Item Attributes. DB table `item_attribute_instance` is empty.");
         LOG_INFO("server.loading", " ");
     }
 }
