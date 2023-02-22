@@ -29,7 +29,7 @@ void ItemAttributesMgr::LoadAttributesTable()
     uint32 oldMSTime = getMSTime();
 
     // Clear in case of reload.
-    attributes.clear();
+    itemInformation.clear();
 
     QueryResult result = CharacterDatabase.Query("SELECT guid, quality, attr_type_1, attr_val_1, attr_type_2, attr_val_2, attr_type_3, attr_val_3, attr_type_4, attr_val_4, attr_type_5, attr_val_5, attr_type_6, attr_val_6, attr_type_7, attr_val_7, attr_type_8, attr_val_8, attr_type_9, attr_val_9 FROM item_attributes_instance");
 
@@ -60,7 +60,7 @@ void ItemAttributesMgr::LoadAttributesTable()
                 itemInfo.Attributes[i].Value = attrValue;
             }
 
-            attributes.emplace(fullGuid, itemInfo);
+            itemInformation.emplace(fullGuid, itemInfo);
 
             ++count;
         } while (result->NextRow());
@@ -73,4 +73,32 @@ void ItemAttributesMgr::LoadAttributesTable()
         LOG_WARN("server.loading", ">> Loaded 0 Item Attribute(s). DB table `item_attribute_instance` is empty.");
         LOG_INFO("server.loading", " ");
     }
+}
+
+ItemInformation* ItemAttributesMgr::GetItemInfo(Item* item)
+{
+    if (!item)
+    {
+        return nullptr;
+    }
+
+    auto it = itemInformation.find(item->GetGUID());
+    if (it == itemInformation.end())
+    {
+        return nullptr;
+    }
+
+    return &it->second;;
+}
+
+bool ItemAttributesMgr::AddItemInfo(Item* item, ItemInformation itemInfo)
+{
+    if (!item)
+    {
+        return false;
+    }
+
+    itemInformation.emplace(item->GetGUID(), itemInfo);
+
+    return true;
 }

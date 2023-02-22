@@ -46,13 +46,14 @@ private:
 
 public:
     void LoadAttributesTable();
-    ItemInformation* GetItemInformation(Item* /*item*/);
+    ItemInformation* GetItemInfo(Item* /*item*/);
+    bool AddItemInfo(Item* item, ItemInformation /*itemInfo*/);
 
 public:
     static ItemAttributesMgr* GetInstance();
 
 private:
-    std::map<ObjectGuid, ItemInformation> attributes;
+    std::map<ObjectGuid, ItemInformation> itemInformation;
 };
 
 #define sItemAttrMgr ItemAttributesMgr::GetInstance()
