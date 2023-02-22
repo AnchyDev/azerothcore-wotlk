@@ -14,7 +14,7 @@ void ItemAttributesMgr::LoadAttributesTable()
     // Clear in case of reload.
     attributes.clear();
 
-    QueryResult result = WorldDatabase.Query("SELECT guid, quality, attr_type_1, attr_val_1, attr_type_2, attr_val_2, attr_type_3, attr_val_3, attr_type_4, attr_val_4, attr_type_5, attr_val_5, attr_type_6, attr_val_6, attr_type_7, attr_val_7, attr_type_8, attr_val_8, attr_type_9, attr_val_9 FROM item_attributes_instance");
+    QueryResult result = CharacterDatabase.Query("SELECT guid, quality, attr_type_1, attr_val_1, attr_type_2, attr_val_2, attr_type_3, attr_val_3, attr_type_4, attr_val_4, attr_type_5, attr_val_5, attr_type_6, attr_val_6, attr_type_7, attr_val_7, attr_type_8, attr_val_8, attr_type_9, attr_val_9 FROM item_attributes_instance");
 
     if (result)
     {
