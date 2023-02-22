@@ -15,6 +15,8 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ItemAttributes/ItemAttributesPlayerScript.h"
+
 // This is where scripts' loading functions should be declared:
 // void MyExampleScript()
 
@@ -22,5 +24,5 @@
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
 {
-    // MyExampleScript()
+    new ItemAttributesPlayerScript();
 }

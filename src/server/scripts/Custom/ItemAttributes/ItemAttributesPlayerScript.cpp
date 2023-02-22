@@ -1,5 +1,6 @@
 #include "ItemAttributesPlayerScript.h"
 #include "ItemAttributesMgr.h"
+#include "Chat.h"
 
 void ItemAttributesPlayerScript::OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/)
 {
@@ -22,4 +23,6 @@ void ItemAttributesPlayerScript::OnLootItem(Player* player, Item* item, uint32 /
     itemInfo.Attributes[0].Value = 50;
 
     sItemAttrMgr->AddItemInfo(item, itemInfo);
+
+    ChatHandler(player->GetSession()).SendSysMessage("Test");
 }
