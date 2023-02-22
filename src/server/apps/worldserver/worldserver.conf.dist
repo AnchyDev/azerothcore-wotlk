@@ -3823,6 +3823,16 @@ ChangeFaction.MaxMoney = 0
 Pet.RankMod.Health = 1
 
 #
+#     Item.CustomAttributes
+#        Description: Enables the use of custom attributes on equipment.
+#        Note: This breaks prefix/suffix items since communicating the interface to the client
+#              requires overwriting the RandomPropertyId with the item guid.
+#                     1 - Enabled
+#        Default:     0 - Disabled
+
+Item.CustomAttributes = 0
+
+#
 ###################################################################################################
 
 ###################################################################################################
