@@ -53,6 +53,7 @@
 #include "GuildMgr.h"
 #include "IPLocation.h"
 #include "InstanceSaveMgr.h"
+#include "ItemAttributesMgr.h"
 #include "ItemEnchantmentMgr.h"
 #include "LFGMgr.h"
 #include "Language.h"
@@ -1684,6 +1685,9 @@ void World::SetInitialWorldSettings()
 
     LOG_INFO("server.loading", "Loading Enchant Spells Proc Datas...");
     sSpellMgr->LoadSpellEnchantProcData();
+
+    LOG_INFO("server.loading", "Loading Item Attributes...");
+    sItemAttrMgr->LoadAttributesTable();
 
     LOG_INFO("server.loading", "Loading Item Random Enchantments Table...");
     LoadRandomEnchantmentsTable();
