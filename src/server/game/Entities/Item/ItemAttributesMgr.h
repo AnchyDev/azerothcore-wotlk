@@ -22,9 +22,9 @@ static constexpr uint32 MAX_ITEM_ATTRIBUTES = 9;
 
 enum AttributeQuality
 {
-    LOW = 0,
-    MEDIUM = 1,
-    HIGH = 2
+    ITEM_ATTR_QUALITY_LOW = 0,
+    ITEM_ATTR_QUALITY_MEDIUM = 1,
+    ITEM_ATTR_QUALITY_HIGH = 2
 };
 
 struct ItemAttribute

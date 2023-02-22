@@ -28,6 +28,8 @@ class SpellInfo;
 class Bag;
 class Unit;
 
+static constexpr uint32 CUSTOM_ATTRIBUTES_RANDOM_PROPERTY_OFFSET = 2500;
+
 struct ItemSetEffect
 {
     uint32 setid;

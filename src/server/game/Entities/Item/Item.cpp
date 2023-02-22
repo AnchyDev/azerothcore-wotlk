@@ -486,7 +486,7 @@ bool Item::LoadFromDB(ObjectGuid::LowType guid, ObjectGuid owner_guid, Field* fi
     // Anchy: Store the item GUID in the RandomPropertyID so the client can use it.
     if (sWorld->getBoolConfig(CONFIG_ITEM_CUSTOM_ATTRIBUTES))
     {
-        SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, guid);
+        SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, CUSTOM_ATTRIBUTES_RANDOM_PROPERTY_OFFSET + guid);
     }
     else
     {
@@ -680,7 +680,7 @@ void Item::SetItemRandomProperties(int32 randomPropId)
     // Anchy: Store the item GUID in the RandomPropertyID so the client can use it.
     if (sWorld->getBoolConfig(CONFIG_ITEM_CUSTOM_ATTRIBUTES))
     {
-        SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, GetGUID().GetRawValue());
+        SetInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID, CUSTOM_ATTRIBUTES_RANDOM_PROPERTY_OFFSET + GetGUID().GetRawValue());
         return;
     }
 
