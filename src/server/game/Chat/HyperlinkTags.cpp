@@ -138,51 +138,68 @@ bool Acore::Hyperlinks::LinkTags::item::StoreTo(ItemLinkData& val, std::string_v
     if (!(val.Item && t.TryConsumeTo(val.EnchantId) && t.TryConsumeTo(val.GemEnchantId[0]) && t.TryConsumeTo(val.GemEnchantId[1]) &&
         t.TryConsumeTo(val.GemEnchantId[2]) && t.TryConsumeTo(dummy) && t.TryConsumeTo(randomPropertyId) && t.TryConsumeTo(val.RandomSuffixBaseAmount) &&
         t.TryConsumeTo(val.RenderLevel) && t.IsEmpty() && !dummy))
+    {
         return false;
-
-    if ((static_cast<int32>(std::numeric_limits<int16>::max()) < randomPropertyId) && (randomPropertyId <= std::numeric_limits<uint16>::max()))
-    { // this is the bug case, the id we received is actually static_cast<uint16>(i16RandomPropertyId)
-        randomPropertyId = static_cast<int16>(randomPropertyId);
-        val.IsBuggedInspectLink = true;
     }
 
-    if (randomPropertyId < 0)
+    if (!sWorld->getBoolConfig(CONFIG_ITEM_CUSTOM_ATTRIBUTES))
     {
-        if (!val.Item->RandomSuffix)
-            return false;
-
-        if (randomPropertyId < -static_cast<int32>(sItemRandomSuffixStore.GetNumRows()))
-            return false;
-
-        if (ItemRandomSuffixEntry const* suffixEntry = sItemRandomSuffixStore.LookupEntry(-randomPropertyId))
+        if ((static_cast<int32>(std::numeric_limits<int16>::max()) < randomPropertyId) && (randomPropertyId <= std::numeric_limits<uint16>::max()))
+        { // this is the bug case, the id we received is actually static_cast<uint16>(i16RandomPropertyId)
+            randomPropertyId = static_cast<int16>(randomPropertyId);
+            val.IsBuggedInspectLink = true;
+        }
+    
+        if (randomPropertyId < 0)
         {
-            val.RandomSuffix = suffixEntry;
-            val.RandomProperty = nullptr;
+            if (!val.Item->RandomSuffix)
+            {
+                return false;
+            }
+
+            if (randomPropertyId < -static_cast<int32>(sItemRandomSuffixStore.GetNumRows()))
+            {
+                return false;
+            }
+
+            if (ItemRandomSuffixEntry const* suffixEntry = sItemRandomSuffixStore.LookupEntry(-randomPropertyId))
+            {
+                val.RandomSuffix = suffixEntry;
+                val.RandomProperty = nullptr;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if (randomPropertyId > 0)
+        {
+            if (!val.Item->RandomProperty)
+            {
+                return false;
+            }
+
+            if (ItemRandomPropertiesEntry const* propEntry = sItemRandomPropertiesStore.LookupEntry(randomPropertyId))
+            {
+                val.RandomSuffix = nullptr;
+                val.RandomProperty = propEntry;
+            }
+            else
+            {
+                return false;
+            }
         }
         else
-            return false;
-    }
-    else if (randomPropertyId > 0)
-    {
-        if (!val.Item->RandomProperty)
-            return false;
-
-        if (ItemRandomPropertiesEntry const* propEntry = sItemRandomPropertiesStore.LookupEntry(randomPropertyId))
         {
             val.RandomSuffix = nullptr;
-            val.RandomProperty = propEntry;
+            val.RandomProperty = nullptr;
         }
-        else
-            return false;
-    }
-    else
-    {
-        val.RandomSuffix = nullptr;
-        val.RandomProperty = nullptr;
-    }
 
-    if ((val.RandomSuffix && !val.RandomSuffixBaseAmount) || (val.RandomSuffixBaseAmount && !val.RandomSuffix))
-        return false;
+        if ((val.RandomSuffix && !val.RandomSuffixBaseAmount) || (val.RandomSuffixBaseAmount && !val.RandomSuffix))
+        {
+            return false;
+        }
+    }
 
     return true;
 }
