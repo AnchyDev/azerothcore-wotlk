@@ -1,33 +1,10 @@
 #include "ItemAttributesListenerScript.h"
+#include "ItemAttributesCommon.h"
 
-
-std::vector<std::string> ItemAttributesListenerScript::Split(const std::string& s, char delimiter)
-{
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(s);
-    while (std::getline(tokenStream, token, delimiter))
-    {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-
-std::vector<std::string> ItemAttributesListenerScript::GetChunks(std::string s, uint8_t chunkSize)
-{
-    std::vector<std::string> chunks;
-
-    for (uint32_t i = 0; i < s.size(); i += chunkSize)
-    {
-        chunks.push_back(s.substr(i, chunkSize));
-    }
-
-    return chunks;
-}
 
 void ItemAttributesListenerScript::SendChunkedPayload(Warden* warden, WardenPayloadMgr* payloadMgr, std::string payload, uint32 chunkSize)
 {
-    auto chunks = GetChunks(payload, chunkSize);
+    auto chunks = sItemAttrHelper->GetChunks(payload, chunkSize);
 
     if (!payloadMgr->GetPayloadById(_prePayloadId))
     {
@@ -147,7 +124,7 @@ void ItemAttributesListenerScript::OnBeforeSendChatMessage(Player* player, uint3
         return;
     }
 
-    auto data = Split(msg, '\t');
+    auto data = sItemAttrHelper->Split(msg, '\t');
 
     auto prefix = data[0];
     auto event = data[1];

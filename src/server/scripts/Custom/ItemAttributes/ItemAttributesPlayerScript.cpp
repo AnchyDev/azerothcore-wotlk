@@ -16,8 +16,10 @@
  */
 
 #include "ItemAttributesPlayerScript.h"
+#include "ItemAttributesCommon.h"
 #include "ItemAttributesMgr.h"
 #include "Chat.h"
+#include "Warden.h"
 
 void ItemAttributesPlayerScript::OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/)
 {
@@ -47,4 +49,74 @@ void ItemAttributesPlayerScript::OnLootItem(Player* player, Item* item, uint32 /
     sItemAttrMgr->AddItemInfo(item, itemInfo);
 
     ChatHandler(player->GetSession()).SendSysMessage("Test");
+}
+
+void ItemAttributesPlayerScript::OnBeforeSendChatMessage(Player* player, uint32& type, uint32& lang, std::string& msg)
+{
+    if (!sWorld->getBoolConfig(CONFIG_ITEM_CUSTOM_ATTRIBUTES))
+    {
+        return;
+    }
+
+    if (!player)
+    {
+        return;
+    }
+
+    auto warden = player->GetSession()->GetWarden();
+    if (!warden)
+    {
+        return;
+    }
+
+    auto payloadMgr = warden->GetPayloadMgr();
+    if (!payloadMgr)
+    {
+        return;
+    }
+
+    if (type != CHAT_MSG_WHISPER)
+    {
+        return;
+    }
+
+    if (lang != LANG_ADDON)
+    {
+        return;
+    }
+
+    auto data = sItemAttrHelper->Split(msg, '\t');
+
+    auto prefix = data[0];
+    auto event = data[1];
+
+    if (data.size() < 3)
+    {
+        LOG_WARN("module", "Didn't receive guid. String: {}", msg);
+        return;
+    }
+    auto sguid = data[2];
+
+    if (prefix != "wltx")
+    {
+        return;
+    }
+
+    if (event != "reqitem")
+    {
+        return;
+    }
+
+    std::istringstream reader(sguid);
+    uint32 guid = 0;
+    reader >> guid;
+
+    std::string payloadPrefix = "wlrx";
+    std::string payload = Acore::StringFormatFmt("itemCache['{}'] = {{ ['suffix'] = 'Hello World', ['quality'] = 'Fantastic' }};", guid);
+    auto packets = sItemAttrHelper->CreateAddonPackets(payloadPrefix, payload, CHAT_MSG_WHISPER, player);
+    LOG_INFO("module", "Got req for item info for guid '{}'.", guid);
+    for (const auto& packet : packets)
+    {
+        player->SendDirectMessage(&packet);
+    }
 }

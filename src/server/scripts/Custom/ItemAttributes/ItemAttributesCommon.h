@@ -15,19 +15,22 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _ITEM_ATTRIBUTES_PLAYER_SCRIPT_H
-#define _ITEM_ATTRIBUTES_PLAYER_SCRIPT_H
+#ifndef _ITEM_ATTRIBUTES_COMMON_H
+#define _ITEM_ATTRIBUTES_COMMON_H
 
-#include "ScriptMgr.h"
-
-class ItemAttributesPlayerScript : public PlayerScript
+class ItemAttributesHelper
 {
-public:
-    ItemAttributesPlayerScript() : PlayerScript("ItemAttributesPlayerScript") { }
-
 private:
-    void OnLootItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/, ObjectGuid /*lootguid*/) override;
-    void OnBeforeSendChatMessage(Player* /*player*/, uint32& /*type*/, uint32& /*lang*/, std::string& /*msg*/) override;
+    ItemAttributesHelper() { }
+public:
+    static ItemAttributesHelper* GetInstance();
+public:
+    std::vector<std::string> Split(const std::string& /*s*/, char /*delimiter*/);
+    std::vector<std::string> GetChunks(std::string /*s*/, uint8_t /*chunkSize*/);
+    WorldPacket CreateAddonPacket(std::string const& prefix, std::string const& msg, ChatMsg msgType, Player* player);
+    std::vector<WorldPacket> CreateAddonPackets(std::string const& prefix, std::string const& msg, ChatMsg msgType, Player* player);
 };
+
+#define sItemAttrHelper ItemAttributesHelper::GetInstance()
 
 #endif

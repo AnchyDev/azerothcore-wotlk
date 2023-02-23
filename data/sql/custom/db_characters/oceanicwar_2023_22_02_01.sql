@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `item_attributes_instance`;
-CREATE TABLE `item_attributes_instance` (
+DROP TABLE IF EXISTS `customattributes_item_instance`;
+CREATE TABLE `customattributes_item_instance` (
   `guid` int(11) unsigned NOT NULL,
   `quality` int(11) DEFAULT 1,
   `attr_type_1` int(11) DEFAULT 0,
