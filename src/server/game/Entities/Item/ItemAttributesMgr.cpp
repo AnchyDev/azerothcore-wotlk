@@ -47,7 +47,7 @@ void ItemAttributesMgr::LoadAttributesTable()
             ObjectGuid fullGuid(guid);
             ItemInformation itemInfo;
 
-            itemInfo.Quality = (AttributeQuality)quality;
+            itemInfo.Quality = (AttributeRarity)quality;
 
             for (auto i = 0; i < MAX_ITEM_ATTRIBUTES; ++i)
             {
@@ -57,7 +57,7 @@ void ItemAttributesMgr::LoadAttributesTable()
                 uint32 attrValue = fields[attrIndex + 1].Get<uint32>();
 
                 itemInfo.Attributes[i].Type = attrType;
-                itemInfo.Attributes[i].Value = attrValue;
+                //itemInfo.Attributes[i].Value = attrValue;
             }
 
             itemInformation.emplace(fullGuid, itemInfo);
@@ -101,4 +101,63 @@ bool ItemAttributesMgr::AddItemInfo(Item* item, ItemInformation itemInfo)
     itemInformation.emplace(item->GetGUID(), itemInfo);
 
     return true;
+}
+
+std::map<uint32, ItemAttributeInfo>* ItemAttributesMgr::GetAttributeTemplates()
+{
+    return &customAttributesTemplate;
+}
+
+void ItemAttributesMgr::LoadAttributeTemplates()
+{
+    uint32 oldMSTime = getMSTime();
+
+    // Clear in case of reload.
+    itemInformation.clear();
+
+    QueryResult result = CharacterDatabase.Query("SELECT id, quality, name, icon, stat_id_1, stat_id_2, stat_id_2, stat_id_4, stat_id_5, stat_id_6, stat_id_7, stat_id_8, stat_id_9 FROM customattributes_template");
+
+    if (result)
+    {
+        uint32 count = 0;
+
+        do
+        {
+            Field* fields = result->Fetch();
+
+            uint64 suffix = fields[0].Get<uint32>();
+            uint32 rarity = fields[1].Get<uint32>();
+            std::string name = fields[2].Get<std::string>();
+            std::string icon = fields[3].Get<std::string>();
+
+            ItemAttributeInfo attributeInfo;
+
+            attributeInfo.Id = suffix;
+            attributeInfo.Rarity = rarity;
+            attributeInfo.Name = name;
+            attributeInfo.Icon = icon;
+
+            for (auto i = 0; i < MAX_ITEM_ATTRIBUTES; ++i)
+            {
+                auto attrIndex = 4 + (i * 2);
+
+                uint32 attrType = fields[attrIndex].Get<uint32>();
+                uint32 attrValue = fields[attrIndex + 1].Get<uint32>();
+
+                attributeInfo.Attributes[i].Type = attrType;
+            }
+
+            customAttributesTemplate.emplace(suffix, attributeInfo);
+
+            ++count;
+        } while (result->NextRow());
+
+        LOG_INFO("server.loading", ">> Loaded {} Item Attribute(s) in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+        LOG_INFO("server.loading", " ");
+    }
+    else
+    {
+        LOG_WARN("server.loading", ">> Loaded 0 Item Attribute(s). DB table `item_attribute_instance` is empty.");
+        LOG_INFO("server.loading", " ");
+    }
 }

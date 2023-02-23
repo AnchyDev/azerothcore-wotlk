@@ -20,22 +20,35 @@
 
 static constexpr uint32 MAX_ITEM_ATTRIBUTES = 9;
 
-enum AttributeQuality
+enum AttributeRarity
 {
-    ITEM_ATTR_QUALITY_LOW = 0,
-    ITEM_ATTR_QUALITY_MEDIUM = 1,
-    ITEM_ATTR_QUALITY_HIGH = 2
+    SUFFIX_RARITY_POOR = 0,
+    SUFFIX_RARITY_COMMON = 1,
+    SUFFIX_RARITY_UNCOMMON = 2,
+    SUFFIX_RARITY_RARE = 3,
+    SUFFIX_RARITY_EPIC = 4,
+    SUFFIX_RARITY_LEGENDARY = 5
 };
 
 struct ItemAttribute
 {
     uint32 Type;
-    uint32 Value;
 };
 
+struct ItemAttributeInfo
+{
+    uint32 Id;
+    uint32 Rarity;
+    std::string Name;
+    std::string Icon;
+    ItemAttribute Attributes[MAX_ITEM_ATTRIBUTES];
+};
+
+//TODO: REMOVE
 struct ItemInformation
 {
-    AttributeQuality Quality;
+    std::string Name;
+    AttributeRarity Quality;
     ItemAttribute Attributes[MAX_ITEM_ATTRIBUTES];
 };
 
@@ -49,13 +62,18 @@ public:
     ItemInformation* GetItemInfo(Item* /*item*/);
     bool AddItemInfo(Item* item, ItemInformation /*itemInfo*/);
 
+    void LoadAttributeTemplates();
+    std::map<uint32, ItemAttributeInfo>* GetAttributeTemplates();
+
 public:
     static ItemAttributesMgr* GetInstance();
 
 private:
     std::map<ObjectGuid, ItemInformation> itemInformation;
+    std::map<uint32, ItemAttributeInfo> customAttributesTemplate;
 };
 
 #define sItemAttrMgr ItemAttributesMgr::GetInstance()
+#define sItemAttrAttributeStore ItemAttributesMgr::GetInstance()->GetAttributeTemplates()
 
 #endif

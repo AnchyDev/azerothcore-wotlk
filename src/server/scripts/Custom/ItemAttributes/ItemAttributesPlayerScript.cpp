@@ -40,11 +40,9 @@ void ItemAttributesPlayerScript::OnLootItem(Player* player, Item* item, uint32 /
 
     ItemInformation itemInfo;
 
-    itemInfo.Quality = ITEM_ATTR_QUALITY_HIGH;
 
     // + 50 Stamina Test
     itemInfo.Attributes[0].Type = 7;
-    itemInfo.Attributes[0].Value = 50;
 
     sItemAttrMgr->AddItemInfo(item, itemInfo);
 

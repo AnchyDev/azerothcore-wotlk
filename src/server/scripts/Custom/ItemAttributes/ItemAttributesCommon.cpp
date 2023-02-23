@@ -1,4 +1,5 @@
 #include "ItemAttributesCommon.h"
+#include "ItemAttributesMgr.h"
 
 std::vector<std::string> ItemAttributesHelper::Split(const std::string& s, char delimiter)
 {
@@ -62,4 +63,67 @@ std::vector<WorldPacket> ItemAttributesHelper::CreateAddonPackets(std::string co
     }
 
     return packets;
+}
+
+std::string ItemAttributesHelper::GetSuffixName(uint32 suffix)
+{
+    std::string suffixName = "";
+    auto it = sItemAttrAttributeStore->find(suffix);
+
+    if (it == sItemAttrAttributeStore->end())
+    {
+        suffixName = "UNDEFINED";
+        return suffixName;
+    }
+
+    suffixName = it->second.Name;
+
+    return suffixName;
+}
+
+std::string ItemAttributesHelper::GetRarityName(uint32 rarity)
+{
+    std::string rarityName = "";
+
+    switch (rarity)
+    {
+    case AttributeRarity::SUFFIX_RARITY_POOR:
+        rarityName = "Poor";
+        break;
+
+    case AttributeRarity::SUFFIX_RARITY_COMMON:
+        rarityName = "Common";
+        break;
+
+    case AttributeRarity::SUFFIX_RARITY_UNCOMMON:
+        rarityName = "Uncommon";
+        break;
+
+    case AttributeRarity::SUFFIX_RARITY_RARE:
+        rarityName = "Rare";
+        break;
+
+    case AttributeRarity::SUFFIX_RARITY_EPIC:
+        rarityName = "Epic";
+        break;
+
+    case AttributeRarity::SUFFIX_RARITY_LEGENDARY:
+        rarityName = "Legendary";
+        break;
+
+    default:
+        rarityName = "UNDEFINED";
+    }
+
+    return rarityName;
+}
+
+std::string ItemAttributesHelper::CreateItemInfoPayload(uint32 guid, uint32 suffix, uint32 rarity, std::vector<uint32> mods)
+{
+    std::string payload = "";
+
+    std::string sSuffix = GetSuffixName(suffix);
+    std::string sRarity = GetRarityName(rarity);
+
+    return payload;
 }

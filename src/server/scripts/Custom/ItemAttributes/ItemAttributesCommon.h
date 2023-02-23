@@ -29,6 +29,11 @@ public:
     std::vector<std::string> GetChunks(std::string /*s*/, uint8_t /*chunkSize*/);
     WorldPacket CreateAddonPacket(std::string const& prefix, std::string const& msg, ChatMsg msgType, Player* player);
     std::vector<WorldPacket> CreateAddonPackets(std::string const& prefix, std::string const& msg, ChatMsg msgType, Player* player);
+
+    std::string GetSuffixName(uint32 suffix);
+    std::string GetRarityName(uint32 rarity);
+
+    std::string CreateItemInfoPayload(uint32 guid, uint32 suffix, uint32 rarity, std::vector<uint32> mods);
 };
 
 #define sItemAttrHelper ItemAttributesHelper::GetInstance()
