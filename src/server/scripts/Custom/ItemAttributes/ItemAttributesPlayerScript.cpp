@@ -21,6 +21,11 @@
 
 void ItemAttributesPlayerScript::OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/)
 {
+    if (!sWorld->getBoolConfig(CONFIG_ITEM_CUSTOM_ATTRIBUTES))
+    {
+        return;
+    }
+
     if (!player)
     {
         return;
