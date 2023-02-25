@@ -27,7 +27,8 @@ enum AttributeRarity
     SUFFIX_RARITY_UNCOMMON = 2,
     SUFFIX_RARITY_RARE = 3,
     SUFFIX_RARITY_EPIC = 4,
-    SUFFIX_RARITY_LEGENDARY = 5
+    SUFFIX_RARITY_LEGENDARY = 5,
+    SUFFIX_RARITY_MAX = 6
 };
 
 struct ItemAttribute
@@ -47,8 +48,8 @@ struct ItemAttributeInfo
 //TODO: REMOVE
 struct ItemInformation
 {
-    std::string Name;
-    AttributeRarity Quality;
+    uint64 Guid;
+    uint32 Quality;
     ItemAttribute Attributes[MAX_ITEM_ATTRIBUTES];
 };
 

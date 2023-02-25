@@ -19,6 +19,7 @@
 #define _ITEM_ATTRIBUTES_PLAYER_SCRIPT_H
 
 #include "ScriptMgr.h"
+#include "ItemAttributesMgr.h"
 
 class ItemAttributesPlayerScript : public PlayerScript
 {
@@ -26,6 +27,7 @@ public:
     ItemAttributesPlayerScript() : PlayerScript("ItemAttributesPlayerScript") { }
 
 private:
+    ItemAttributeInfo* GetAttributeInfoFromGuid(uint32 guid);
     void OnLootItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/, ObjectGuid /*lootguid*/) override;
     void OnBeforeSendChatMessage(Player* /*player*/, uint32& /*type*/, uint32& /*lang*/, std::string& /*msg*/) override;
 };

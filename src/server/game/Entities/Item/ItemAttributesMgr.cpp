@@ -70,7 +70,7 @@ void ItemAttributesMgr::LoadAttributesTable()
     }
     else
     {
-        LOG_WARN("server.loading", ">> Loaded 0 Item Attribute(s). DB table `item_attribute_instance` is empty.");
+        LOG_WARN("server.loading", ">> Loaded 0 Item Attribute(s). DB table `customattribute_item_instance` is empty.");
         LOG_INFO("server.loading", " ");
     }
 }
@@ -113,9 +113,9 @@ void ItemAttributesMgr::LoadAttributeTemplates()
     uint32 oldMSTime = getMSTime();
 
     // Clear in case of reload.
-    itemInformation.clear();
+    customAttributesTemplate.clear();
 
-    QueryResult result = CharacterDatabase.Query("SELECT id, quality, name, icon, stat_id_1, stat_id_2, stat_id_2, stat_id_4, stat_id_5, stat_id_6, stat_id_7, stat_id_8, stat_id_9 FROM customattributes_template");
+    QueryResult result = WorldDatabase.Query("SELECT id, quality, name, icon, stat_id_1, stat_id_2, stat_id_2, stat_id_4, stat_id_5, stat_id_6, stat_id_7, stat_id_8, stat_id_9 FROM customattributes_template");
 
     if (result)
     {
@@ -144,6 +144,8 @@ void ItemAttributesMgr::LoadAttributeTemplates()
                 uint32 attrType = fields[attrIndex].Get<uint32>();
                 uint32 attrValue = fields[attrIndex + 1].Get<uint32>();
 
+
+                //FIXME: Access violation
                 attributeInfo.Attributes[i].Type = attrType;
             }
 
@@ -152,12 +154,12 @@ void ItemAttributesMgr::LoadAttributeTemplates()
             ++count;
         } while (result->NextRow());
 
-        LOG_INFO("server.loading", ">> Loaded {} Item Attribute(s) in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+        LOG_INFO("server.loading", ">> Loaded {} Item Attribute Template(s) in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
         LOG_INFO("server.loading", " ");
     }
     else
     {
-        LOG_WARN("server.loading", ">> Loaded 0 Item Attribute(s). DB table `item_attribute_instance` is empty.");
+        LOG_WARN("server.loading", ">> Loaded 0 Item Attribute Template(s). DB table `customattributes_template` is empty.");
         LOG_INFO("server.loading", " ");
     }
 }

@@ -40,14 +40,28 @@ void ItemAttributesPlayerScript::OnLootItem(Player* player, Item* item, uint32 /
 
     ItemInformation itemInfo;
 
+    itemInfo.Guid = item->GetGUID().GetRawValue();
 
-    // + 50 Stamina Test
-    itemInfo.Attributes[0].Type = 7;
+    uint32 rarity = urand(0, SUFFIX_RARITY_MAX - 1);
+    itemInfo.Quality = rarity;
 
-    sItemAttrMgr->AddItemInfo(item, itemInfo);
+    ItemAttributeInfo* suffix = sItemAttrHelper->GetRandomSuffix();
 
-    ChatHandler(player->GetSession()).SendSysMessage("Test");
+    LOG_INFO("module", "Generated suffix {} for item {}.", suffix->Name, item->GetTemplate()->Name1);
 }
+
+/*ItemAttributeInfo* ItemAttributesPlayerScript::GetAttributeInfoFromGuid(uint32 guid)
+{
+    ItemAttributeInfo attrInfo;
+
+    attrInfo.Name = "Tiger";
+    attrInfo.Icon = "Interface/ICONS/ABILITY_HUNTER_MASTERSCALL";
+    attrInfo.Rarity = 3;
+    attrInfo.Attributes[0].Type = 7; //Stam
+    attrInfo.Attributes[1].Type = 3; //Agi
+
+    return &attrInfo;
+}*/
 
 void ItemAttributesPlayerScript::OnBeforeSendChatMessage(Player* player, uint32& type, uint32& lang, std::string& msg)
 {
@@ -56,7 +70,7 @@ void ItemAttributesPlayerScript::OnBeforeSendChatMessage(Player* player, uint32&
         return;
     }
 
-    if (!player)
+    /*if (!player)
     {
         return;
     }
@@ -109,12 +123,14 @@ void ItemAttributesPlayerScript::OnBeforeSendChatMessage(Player* player, uint32&
     uint32 guid = 0;
     reader >> guid;
 
+    ItemAttributeInfo* attrInfo = GetAttributeInfoFromGuid(guid);
+
     std::string payloadPrefix = "wlrx";
-    std::string payload = Acore::StringFormatFmt("itemCache['{}'] = {{ ['suffix'] = 'Hello World', ['quality'] = 'Fantastic' }};", guid);
+    std::string payload = Acore::StringFormatFmt("itemCache['{}'] = {{ ['suffix'] = '{}', ['quality'] = '{}' }};", guid, attrInfo->Name, attrInfo->Rarity);
     auto packets = sItemAttrHelper->CreateAddonPackets(payloadPrefix, payload, CHAT_MSG_WHISPER, player);
     LOG_INFO("module", "Got req for item info for guid '{}'.", guid);
     for (const auto& packet : packets)
     {
         player->SendDirectMessage(&packet);
-    }
+    }*/
 }

@@ -1,7 +1,6 @@
 #include "ItemAttributesListenerScript.h"
 #include "ItemAttributesCommon.h"
 
-
 void ItemAttributesListenerScript::SendChunkedPayload(Warden* warden, WardenPayloadMgr* payloadMgr, std::string payload, uint32 chunkSize)
 {
     auto chunks = sItemAttrHelper->GetChunks(payload, chunkSize);

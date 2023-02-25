@@ -1691,6 +1691,9 @@ void World::SetInitialWorldSettings()
     LOG_INFO("server.loading", "Loading Item Attributes...");
     sItemAttrMgr->LoadAttributesTable();
 
+    LOG_INFO("server.loading", "Loading Item Attributes Templates...");
+    sItemAttrMgr->LoadAttributeTemplates();
+
     LOG_INFO("server.loading", "Loading Item Random Enchantments Table...");
     LoadRandomEnchantmentsTable();
 

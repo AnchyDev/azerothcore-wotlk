@@ -1,35 +1,9 @@
 #include "ItemAttributesCommon.h"
 #include "ItemAttributesMgr.h"
 
-std::vector<std::string> ItemAttributesHelper::Split(const std::string& s, char delimiter)
-{
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(s);
-    while (std::getline(tokenStream, token, delimiter))
-    {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
+/*
 
-std::vector<std::string> ItemAttributesHelper::GetChunks(std::string s, uint8_t chunkSize)
-{
-    std::vector<std::string> chunks;
 
-    for (uint32_t i = 0; i < s.size(); i += chunkSize)
-    {
-        chunks.push_back(s.substr(i, chunkSize));
-    }
-
-    return chunks;
-}
-
-ItemAttributesHelper* ItemAttributesHelper::GetInstance()
-{
-    static ItemAttributesHelper instance;
-    return &instance;
-}
 
 WorldPacket ItemAttributesHelper::CreateAddonPacket(std::string const& prefix, std::string const& msg, ChatMsg msgType, Player* player)
 {
@@ -63,6 +37,51 @@ std::vector<WorldPacket> ItemAttributesHelper::CreateAddonPackets(std::string co
     }
 
     return packets;
+}
+
+
+
+
+
+
+std::string ItemAttributesHelper::CreateItemInfoPayload(uint32 guid, uint32 suffix, uint32 rarity, std::vector<uint32> mods)
+{
+    std::string payload = "";
+
+    std::string sSuffix = GetSuffixName(suffix);
+    std::string sRarity = GetRarityName(rarity);
+
+    return payload;
+}*/
+
+ItemAttributesHelper* ItemAttributesHelper::GetInstance()
+{
+    static ItemAttributesHelper instance;
+    return &instance;
+}
+
+std::vector<std::string> ItemAttributesHelper::Split(const std::string& s, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(s);
+    while (std::getline(tokenStream, token, delimiter))
+    {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
+
+std::vector<std::string> ItemAttributesHelper::GetChunks(std::string s, uint8_t chunkSize)
+{
+    std::vector<std::string> chunks;
+
+    for (uint32_t i = 0; i < s.size(); i += chunkSize)
+    {
+        chunks.push_back(s.substr(i, chunkSize));
+    }
+
+    return chunks;
 }
 
 std::string ItemAttributesHelper::GetSuffixName(uint32 suffix)
@@ -118,12 +137,16 @@ std::string ItemAttributesHelper::GetRarityName(uint32 rarity)
     return rarityName;
 }
 
-std::string ItemAttributesHelper::CreateItemInfoPayload(uint32 guid, uint32 suffix, uint32 rarity, std::vector<uint32> mods)
+ItemAttributeInfo* ItemAttributesHelper::GetRandomSuffix()
 {
-    std::string payload = "";
+    std::vector<uint32> keyStore;
 
-    std::string sSuffix = GetSuffixName(suffix);
-    std::string sRarity = GetRarityName(rarity);
+    for (const auto& key : *sItemAttrAttributeStore)
+    {
+        keyStore.push_back(key.first);
+    }
 
-    return payload;
+    std::shuffle(keyStore.begin(), keyStore.end(), RandomEngine::Instance());
+
+    return &sItemAttrAttributeStore->find(keyStore[0])->second;
 }
