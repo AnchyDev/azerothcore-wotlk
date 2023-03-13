@@ -19,7 +19,9 @@
 #define _WARDEN_PAYLOAD_MGR_H
 
 #include "WardenCheckMgr.h"
+
 #include <list>
+#include <unordered_set>
 
  /**
  * @class WardenPayloadMgr
@@ -110,6 +112,12 @@ public:
     std::list<uint16>* GetPayloadsInQueue();
 
     /**
+    * @brief Get the unique hash of all payload ids.
+    * @return The unique hash of all of the payloads in the list.
+    */
+    std::string GetCheckListHash(std::list<uint16>& checkList, uint32 serverTicks);
+
+    /**
     * @brief The minimum id available for custom payloads.
     */
     static uint16 constexpr WardenPayloadOffsetMin = 5000;
@@ -133,6 +141,11 @@ public:
     * @brief The cached payloads that are accessed by payload id.
     */
     std::map<uint16, WardenCheck> CachedChecks;
+
+    /**
+    * @brief The cached interrupted check list hashes.
+    */
+    std::unordered_set<std::string> InterruptedChecks;
 };
 
 #endif // _WARDEN_PAYLOAD_MGR_H

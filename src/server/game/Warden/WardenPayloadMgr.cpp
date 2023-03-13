@@ -148,3 +148,18 @@ std::list<uint16>* WardenPayloadMgr::GetPayloadsInQueue()
 {
     return &QueuedPayloads;
 }
+
+std::string WardenPayloadMgr::GetCheckListHash(std::list<uint16>& checkList, uint32 serverTicks)
+{
+    std::string hashResult;
+
+    for (uint16 checkId : checkList)
+    {
+        hashResult.append(std::to_string(checkId));
+        hashResult.append(";");
+    }
+
+    hashResult.append(std::to_string(serverTicks));
+
+    return hashResult;
+}

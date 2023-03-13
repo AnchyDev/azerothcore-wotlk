@@ -260,7 +260,7 @@ bool WardenWin::IsCheckInProgress()
 }
 
 /**
-* @brief Force call RequestChecks() so they are sent immediately, this interrupts warden and breaks result.
+* @brief Force call RequestChecks() so they are sent immediately, this interrupts warden and breaks check results.
 */
 void WardenWin::ForceChecks()
 {
@@ -287,6 +287,8 @@ void WardenWin::RequestChecks()
     }
 
     _serverTicks = GameTime::GetGameTimeMS().count();
+    LOG_DEBUG("warden", "RequestTicks {}", _serverTicks);
+
     _CurrentChecks.clear();
 
     // Erase any nullptrs.
@@ -557,6 +559,21 @@ void WardenWin::RequestChecks()
     }
 
     LOG_DEBUG("warden", "{}", stream.str());
+
+    if (_interrupted)
+    {
+        auto payloadMgr = GetPayloadMgr();
+
+        std::string hash = payloadMgr->GetCheckListHash(_CurrentChecks, _serverTicks);
+        LOG_DEBUG("warden", "Generated hash '{}' for checkids.", hash);
+
+        auto it = payloadMgr->InterruptedChecks.find(hash);
+        if (it == payloadMgr->InterruptedChecks.end())
+        {
+            payloadMgr->InterruptedChecks.insert(hash);
+            LOG_DEBUG("warden", "Inserting '{}' into hash cache.", hash);
+        }
+    }
 }
 
 void WardenWin::HandleData(ByteBuffer& buff)
@@ -575,10 +592,7 @@ void WardenWin::HandleData(ByteBuffer& buff)
     {
         buff.rfinish();
 
-        if (!_interrupted)
-        {
-            ApplyPenalty(0, "Failed size checks in HandleData");
-        }
+        ApplyPenalty(0, "Failed size checks in HandleData");
 
         return;
     }
@@ -588,10 +602,7 @@ void WardenWin::HandleData(ByteBuffer& buff)
         buff.rpos(buff.wpos());
         LOG_DEBUG("warden", "CHECKSUM FAIL");
 
-        if (!_interrupted)
-        {
-            ApplyPenalty(0, "Failed checksum in HandleData");
-        }
+        ApplyPenalty(0, "Failed checksum in HandleData");
 
         return;
     }
@@ -618,6 +629,25 @@ void WardenWin::HandleData(ByteBuffer& buff)
         LOG_DEBUG("warden", "RequestTicks {}", _serverTicks);    // At request
         LOG_DEBUG("warden", "Ticks {}", newClientTicks);         // At response
         LOG_DEBUG("warden", "Ticks diff {}", ourTicks - newClientTicks);
+    }
+
+    // Check for interrupted cycle
+    bool isInterrupted;
+    auto payloadMgr = GetPayloadMgr();
+
+    std::string hash = payloadMgr->GetCheckListHash(_CurrentChecks, _serverTicks);
+    LOG_DEBUG("warden", "Reading hash '{}' for checkids.", hash);
+
+    auto hashIt = payloadMgr->InterruptedChecks.find(hash);
+    if (hashIt != payloadMgr->InterruptedChecks.end())
+    {
+        isInterrupted = true;
+
+        LOG_DEBUG("warden", "Warden was interrupted by ForceChecks, ignoring results.");
+
+        /// @todo Fix nullptr when receiving multiple responses of same type.
+        //LOG_DEBUG("warden", "Removing '{}' from hash cache.", hash);
+        //payloadMgr->InterruptedChecks.erase(hashIt);
     }
 
     uint16 checkFailed = 0;
@@ -746,20 +776,11 @@ void WardenWin::HandleData(ByteBuffer& buff)
         }
     }
 
-    if (checkFailed > 0 && !_interrupted)
+    if (checkFailed > 0)
     {
-        ApplyPenalty(checkFailed, "");
-    }
-
-    if (_interrupted)
-    {
-        LOG_DEBUG("warden", "Warden was interrupted by ForceChecks, ignoring results.");
-
-        _interruptCounter--;
-
-        if (_interruptCounter == 0)
+        if (!isInterrupted)
         {
-            _interrupted = false;
+            ApplyPenalty(checkFailed, "");
         }
     }
 
