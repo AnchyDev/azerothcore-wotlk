@@ -21,9 +21,11 @@
 #include "CalendarMgr.h"
 #include "CharacterCache.h"
 #include "Chat.h"
+#include "ChatTextBuilder.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
 #include "GameTime.h"
+#include "GridNotifiers.h"
 #include "GuildMgr.h"
 #include "GuildPackets.h"
 #include "Language.h"
@@ -1286,6 +1288,39 @@ void Guild::HandleSetMOTD(WorldSession* session, std::string_view motd)
         CharacterDatabase.Execute(stmt);
 
         _BroadcastEvent(GE_MOTD, ObjectGuid::Empty, m_motd);
+    }
+}
+
+void Guild::HandleBroadcastItem(Player* player, Item* item)
+{
+    auto itemProto = item->GetTemplate();
+
+    // Retrieve the locale name.
+    int localeIndex = player->GetSession()->GetSessionDbLocaleIndex();
+    if (localeIndex >= 0)
+    {
+        uint8 ulocaleIndex = uint8(localeIndex);
+        if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemProto->ItemId))
+        {
+            // Set locale name, or default name if locale = 0.
+            std::string name = (il->Name.size() > ulocaleIndex && !il->Name[ulocaleIndex].empty()) ? il->Name[ulocaleIndex] : itemProto->Name1;
+
+            if (!name.empty())
+            {
+                auto handler = ChatHandler(player->GetSession());
+
+                std::ostringstream oss;
+
+                oss << "|c" << std::hex << ItemQualityColors[itemProto->Quality] << std::dec << "|Hitem:" << itemProto->ItemId << ":::::::::::::::|h[" << name << "]|h|r";
+                auto msg = handler.PGetParseString(LANG_GUILD_REPORT_ITEM, this->GetName(), this->GetName(), oss.str());
+
+
+                WorldPacket data;
+                handler.BuildChatPacket(data, CHAT_MSG_GUILD_ACHIEVEMENT, LANG_UNIVERSAL, nullptr, nullptr, msg);
+
+                player->GetGuild()->BroadcastPacket(&data);
+            }
+        }
     }
 }
 

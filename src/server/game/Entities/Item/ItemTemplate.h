@@ -175,7 +175,7 @@ enum ItemFlags : uint32
     ITEM_FLAG_IS_BOUND_TO_ACCOUNT               = 0x08000000, // Item binds to account and can be sent only to your own characters
     ITEM_FLAG_NO_REAGENT_COST                   = 0x10000000, // Spell is cast ignoring reagents
     ITEM_FLAG_IS_MILLABLE                       = 0x20000000, // Item can be milled
-    ITEM_FLAG_REPORT_TO_GUILD_CHAT              = 0x40000000,
+    ITEM_FLAG_REPORT_TO_GUILD_CHAT              = 0x40000000, // Item is printed into the guild chat using format: [Player] has received [Item Link]!
     ITEM_FLAG_NO_PROGRESSIVE_LOOT               = 0x80000000
 };
 

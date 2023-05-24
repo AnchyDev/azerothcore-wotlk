@@ -698,6 +698,7 @@ public:
     void HandleRoster(WorldSession* session);
     void HandleQuery(WorldSession* session);
     void HandleSetMOTD(WorldSession* session, std::string_view motd);
+    void HandleBroadcastItem(Player* player, Item* item);
     void HandleSetInfo(WorldSession* session, std::string_view info);
     void HandleSetEmblem(WorldSession* session, const EmblemInfo& emblemInfo);
     void HandleSetLeader(WorldSession* session, std::string_view name);
