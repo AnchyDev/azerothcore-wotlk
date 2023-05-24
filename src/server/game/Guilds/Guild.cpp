@@ -1312,11 +1312,10 @@ void Guild::HandleBroadcastItem(Player* player, Item* item)
                 oss << "|c" << std::hex << ItemQualityColors[itemProto->Quality] << std::dec << "|Hitem:" << itemProto->ItemId << ":::::::::::::::|h[" << name << "]|h|r";
                 auto msg = handler.PGetParseString(LANG_GUILD_REPORT_ITEM, this->GetName(), this->GetName(), oss.str());
 
-
                 WorldPacket data;
                 handler.BuildChatPacket(data, CHAT_MSG_GUILD_ACHIEVEMENT, LANG_UNIVERSAL, nullptr, nullptr, msg);
 
-                player->GetGuild()->BroadcastPacket(&data);
+                BroadcastPacket(&data);
             }
         }
     }
