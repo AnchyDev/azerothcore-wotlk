@@ -698,7 +698,6 @@ public:
     void HandleRoster(WorldSession* session);
     void HandleQuery(WorldSession* session);
     void HandleSetMOTD(WorldSession* session, std::string_view motd);
-    void HandleBroadcastItem(Player* player, Item* item);
     void HandleSetInfo(WorldSession* session, std::string_view info);
     void HandleSetEmblem(WorldSession* session, const EmblemInfo& emblemInfo);
     void HandleSetLeader(WorldSession* session, std::string_view name);
@@ -748,6 +747,14 @@ public:
     void BroadcastToGuild(WorldSession* session, bool officerOnly, std::string_view msg, uint32 language = LANG_UNIVERSAL) const;
     void BroadcastPacketToRank(WorldPacket const* packet, uint8 rankId) const;
     void BroadcastPacket(WorldPacket const* packet) const;
+    /**
+    * @brief Broadcasts a message notifying guild members that the player received an item.
+    * @param player The player who received the item.
+    * @param item The item that was received.
+    * @note
+    * - This is intended for use with the ITEM_FLAG_REPORT_TO_GUILD_CHAT flag.
+    */
+    void BroadcastItemToGuild(Player* player, Item* item);
 
     void MassInviteToEvent(WorldSession* session, uint32 minLevel, uint32 maxLevel, uint32 minRank);
 

@@ -13526,7 +13526,7 @@ LootItem* Player::StoreLootItem(uint8 lootSlot, Loot* loot, InventoryResult& msg
         // Transmit item to guild chat if it has the appropriate flag.
         if (this->GetGuild() && newitem->GetTemplate()->Flags & ITEM_FLAG_REPORT_TO_GUILD_CHAT)
         {
-            this->GetGuild()->HandleBroadcastItem(this, newitem);
+            this->GetGuild()->BroadcastItemToGuild(this, newitem);
         }
     }
     else

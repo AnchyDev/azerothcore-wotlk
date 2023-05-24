@@ -1289,7 +1289,7 @@ void Guild::HandleSetMOTD(WorldSession* session, std::string_view motd)
     }
 }
 
-void Guild::HandleBroadcastItem(Player* player, Item* item)
+void Guild::BroadcastItemToGuild(Player* player, Item* item)
 {
     auto itemProto = item->GetTemplate();
 
