@@ -1309,7 +1309,10 @@ void Guild::HandleBroadcastItem(Player* player, Item* item)
 
                 std::ostringstream oss;
 
+                // Build item link.
                 oss << "|c" << std::hex << ItemQualityColors[itemProto->Quality] << std::dec << "|Hitem:" << itemProto->ItemId << ":::::::::::::::|h[" << name << "]|h|r";
+
+                // Fetch guild broadcast string locale.
                 auto msg = handler.PGetParseString(LANG_GUILD_REPORT_ITEM, this->GetName(), this->GetName(), oss.str());
 
                 WorldPacket data;
