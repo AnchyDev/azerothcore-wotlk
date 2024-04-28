@@ -254,6 +254,8 @@ public:
             if (pInstance && pInstance->GetData(TYPE_HODIR) != DONE)
             {
                 pInstance->SetData(TYPE_HODIR, NOT_STARTED);
+
+                pInstance->SetData(TYPE_WINTER_CACHE, 0); // Respawn the HardMode winter cache
             }
 
             if (GameObject* go = me->FindNearestGameObject(GO_HODIR_FRONTDOOR, 900.0f))

@@ -714,6 +714,12 @@ public:
                         m_hodirHardmodeChest.Clear();
                     }
                     break;
+                case TYPE_WINTER_CACHE:
+                    if (Creature* creature = instance->GetCreature(m_uiHodirGUID))
+                    {
+                        SpawnHodirChests(instance->GetDifficulty(), creature);
+                    }
+                    break;
                 case TYPE_WATCHERS:
                     m_auiEncounter[type] |= 1 << data;
                     break;
